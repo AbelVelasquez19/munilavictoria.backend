@@ -1,0 +1,20 @@
+package pe.gob.mlvictoria.pagolinea.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class LoginRequestDTO {
+
+    @JsonProperty("codigo")
+    private String codigo;
+
+    @JsonProperty("userpassword")
+    private String password;
+}

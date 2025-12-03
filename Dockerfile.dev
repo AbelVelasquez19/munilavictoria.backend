@@ -1,0 +1,17 @@
+# Etapa para desarrollo de Spring Boot
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+# Gradle wrapper y config
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle settings.gradle ./
+
+RUN chmod +x gradlew
+# precache (opcional)
+RUN ./gradlew build -x test || true
+
+# El código se monta por volumen; no copies src aquí
+# No pongas CMD aquí; lo daremos en docker-compose
+

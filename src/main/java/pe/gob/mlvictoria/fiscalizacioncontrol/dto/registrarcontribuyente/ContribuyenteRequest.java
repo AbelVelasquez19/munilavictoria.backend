@@ -1,0 +1,103 @@
+package pe.gob.mlvictoria.fiscalizacioncontrol.dto.registrarcontribuyente;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.util.Map;
+
+@Data
+@AllArgsConstructor
+public class ContribuyenteRequest {
+    private Integer busc;
+    private String codigo;
+    private String idPers;
+    private String idDocu;
+    private String numDoc;
+    private String nombres;
+    private String paterno;
+    private String materno;
+    private String idDist;
+    private String tipourb;
+    private String desUrb;
+    private String tipovia;
+    private String desVia;
+    private String idZona;
+    private String idUrba;
+    private String idVia;
+    private String referencia;
+    private String manzana;
+    private String lote;
+    private String subLote;
+    private String numero;
+    private String departam;
+    private Integer nestado;
+    private String operador;
+    private String estacion;
+    private String fechIng;
+    private String idTipocontri;
+    private String idSubtipocontri;
+    private String idMotivoActualizacion;
+    private String tipoInteriorId;
+    private String tipoAgrupamientoId;
+    private String tipoIngresoId;
+    private String tipoEdificioId;
+    private String tipoBusqueda;
+    private String razon;
+    private String nomvia;
+    private String letra1;
+    private String numero2;
+    private String piso;
+    private String letra2;
+    private String nombreIngreso;
+    private String nombreAgrupamiento;
+    private String nombreEdificio;
+    private String numeroInterno;
+    private String letraInterno;
+    private String anno;
+    private String nro;
+    private String dpto;
+    private String Mza;
+    private String Lte;
+    private String SubLte;
+    private String correo_e;
+    private String telefono1;
+    private String anexo1;
+    private String telefono2;
+    private String anexo2;
+    private String partidaDefuncion;
+    private String fechaDefuncion;
+    private String flagNotificar;
+    private String numDocCoac;
+    private String tipodocCoac;
+    private String cbzonas;
+    private Integer flagValidaPide;
+    private Integer tipoModificacion;
+    private Integer tipoOperacion;
+    private String sexo;
+    private String pagWeb;
+    private Integer estadoCivil;
+    private String fechNacimiento;
+    private Integer autorizaGsat;
+    private String sumiLuz;
+    private String sumiAgua;
+    private Integer envioSms;
+    private Integer envioCorreo;
+    private String block;
+    private String interior;
+    private String tienda;
+    private String stand;
+    private String oficina;
+    private String subMz;
+    private String sotano;
+    private String mezzan;
+    private String seccion;
+    private String unidadInmobiliaria;
+    private String etapa;
+    private String sector;
+    private String puesto;
+    private String localComercial;
+    private String usuario;
+
+    private Map<String, String> datosFiscales;
+}

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteNotificacionesMaestroApp" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isTitleNewPage="true" uuid="953d71c0-a977-47de-a301-681f2f4f538e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter1.xml"/>
+	<parameter name="fecIniNoti" class="java.lang.String"/>
+	<parameter name="fecFinNoti" class="java.lang.String"/>
+	<parameter name="inspector" class="java.lang.String"/>
+	<parameter name="numeroNotificacion" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<queryString language="plsql">
+		<![CDATA[exec califica.notificiacion_cargo_mobilidad_urbano @fecIniNoti=$P{fecIniNoti},@fecFinNoti=$P{fecFinNoti},@Inspector=$P{inspector}]]>
+	</queryString>
+	<field name="codigoContri" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="codigoContri"/>
+		<property name="com.jaspersoft.studio.field.label" value="codigoContri"/>
+	</field>
+	<field name="faanonotif" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="faanonotif"/>
+		<property name="com.jaspersoft.studio.field.label" value="faanonotif"/>
+	</field>
+	<field name="numeroNotificacion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="numeroNotificacion"/>
+		<property name="com.jaspersoft.studio.field.label" value="numeroNotificacion"/>
+	</field>
+	<field name="NRONOTIF" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="NRONOTIF"/>
+		<property name="com.jaspersoft.studio.field.label" value="NRONOTIF"/>
+	</field>
+	<field name="tipoDocumento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="tipoDocumento"/>
+		<property name="com.jaspersoft.studio.field.label" value="tipoDocumento"/>
+	</field>
+	<field name="nombreAdministrado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombreAdministrado"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombreAdministrado"/>
+	</field>
+	<field name="numeroDocumento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="numeroDocumento"/>
+		<property name="com.jaspersoft.studio.field.label" value="numeroDocumento"/>
+	</field>
+	<field name="domicilio" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="domicilio"/>
+		<property name="com.jaspersoft.studio.field.label" value="domicilio"/>
+	</field>
+	<field name="distrito" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="distrito"/>
+		<property name="com.jaspersoft.studio.field.label" value="distrito"/>
+	</field>
+	<field name="direccion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="direccion"/>
+		<property name="com.jaspersoft.studio.field.label" value="direccion"/>
+	</field>
+	<field name="giro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="giro"/>
+		<property name="com.jaspersoft.studio.field.label" value="giro"/>
+	</field>
+	<field name="fechaDeteccion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fechaDeteccion"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaDeteccion"/>
+	</field>
+	<field name="fechaDeteccionDia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fechaDeteccionDia"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaDeteccionDia"/>
+	</field>
+	<field name="fechaDeteccionmes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fechaDeteccionmes"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaDeteccionmes"/>
+	</field>
+	<field name="fechaDeteccionanio01" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fechaDeteccionanio01"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaDeteccionanio01"/>
+	</field>
+	<field name="fechaDeteccionanio02" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fechaDeteccionanio02"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaDeteccionanio02"/>
+	</field>
+	<field name="fechaDeteccionanio03" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fechaDeteccionanio03"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaDeteccionanio03"/>
+	</field>
+	<field name="fechaDeteccionanio04" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fechaDeteccionanio04"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaDeteccionanio04"/>
+	</field>
+	<field name="hora" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="hora"/>
+		<property name="com.jaspersoft.studio.field.label" value="hora"/>
+	</field>
+	<field name="uit" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="uit"/>
+		<property name="com.jaspersoft.studio.field.label" value="uit"/>
+	</field>
+	<field name="monto" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="monto"/>
+		<property name="com.jaspersoft.studio.field.label" value="monto"/>
+	</field>
+	<field name="medidacomp" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="medidacomp"/>
+		<property name="com.jaspersoft.studio.field.label" value="medidacomp"/>
+	</field>
+	<field name="base_legal" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="base_legal"/>
+		<property name="com.jaspersoft.studio.field.label" value="base_legal"/>
+	</field>
+	<field name="inspector" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="inspector"/>
+		<property name="com.jaspersoft.studio.field.label" value="inspector"/>
+	</field>
+	<field name="tdocinspe" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="tdocinspe"/>
+		<property name="com.jaspersoft.studio.field.label" value="tdocinspe"/>
+	</field>
+	<field name="dniInspector" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="dniInspector"/>
+		<property name="com.jaspersoft.studio.field.label" value="dniInspector"/>
+	</field>
+	<field name="codigo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="codigo"/>
+		<property name="com.jaspersoft.studio.field.label" value="codigo"/>
+	</field>
+	<field name="descripcion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="descripcion"/>
+		<property name="com.jaspersoft.studio.field.label" value="descripcion"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="128" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="0" y="0" width="595" height="60" uuid="108934c4-cdc2-4f08-9385-30b1c1cd70f5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<subreportParameter name="fecIniNoti">
+					<subreportParameterExpression><![CDATA[$P{fecIniNoti}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecFinNoti">
+					<subreportParameterExpression><![CDATA[$P{fecFinNoti}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inspector">
+					<subreportParameterExpression><![CDATA[$P{inspector}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="numeroNotificacion">
+					<subreportParameterExpression><![CDATA[$F{numeroNotificacion}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "notificacionCargoApp.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="68" width="595" height="52" uuid="9ce749ab-0e36-43c8-95ac-7d2436bef305"/>
+				<subreportParameter name="fecIniNoti">
+					<subreportParameterExpression><![CDATA[$P{fecIniNoti}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecFinNoti">
+					<subreportParameterExpression><![CDATA[$P{fecFinNoti}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inspector">
+					<subreportParameterExpression><![CDATA[$P{inspector}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="numeroNotificacion">
+					<subreportParameterExpression><![CDATA[$F{numeroNotificacion}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "actaFiscalizacionApp.jasper"]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="64" width="100" height="1" uuid="d98aebda-dde9-4ac1-a10f-90b8ce92db72"/>
+			</break>
+		</band>
+	</detail>
+</jasperReport>

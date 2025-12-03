@@ -1,0 +1,10 @@
+{"ts":"2025-11-29 15:15:21","ip_servidor":"192.168.65.1","log":{"tramo":null,"purchase_number":null,"channel":null,"navegador":null,"url":null,"visa_url":null,"visa_merchant_id":null,"sesion_visa":null,"data":null,"resumen":null,"detalle":null}}
+
+{"ts":"2025-11-29 15:16:34","ip_servidor":"192.168.65.1","log":{"tramo":null,"purchase_number":null,"channel":null,"navegador":null,"url":null,"visa_url":null,"visa_merchant_id":null,"sesion_visa":null,"data":null,"resumen":null,"detalle":null}}
+
+{"ts":"2025-11-29 15:16:48","ip_servidor":"192.168.65.1","log":{"tramo":null,"purchase_number":null,"channel":null,"navegador":null,"url":null,"visa_url":null,"visa_merchant_id":null,"sesion_visa":null,"data":null,"resumen":null,"detalle":null}}
+
+{"ts":"2025-11-29 15:21:04","ip_servidor":"172.16.201.24","log":{"tramo":null,"purchase_number":null,"channel":null,"navegador":null,"url":null,"visa_url":null,"visa_merchant_id":null,"sesion_visa":null,"data":null,"resumen":null,"detalle":null}}
+
+{"ts":"2025-11-29 15:29:33","ip_servidor":"172.16.201.24","log":{"tramo":"0001","purchase_number":"1044931","channel":"web","navegador":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36","url":"http://localhost:8081/api/15/1044931/1","visa_url":"https://static-content-qas.vnforapps.com/v2/js/checkout.js","visa_merchant_id":"456879852","sesion_visa":"10429f7b331f965e88153718123564734221a582d9ddfecc81e19a66af9f8357","data":{},"resumen":{"codigo":1644050,"amount":15,"total_deuda":15,"total_descuento":0,"criterio":"","cantidad_recibos":1},"detalle":[{"status":1,"message":"OK","idReserva":15,"codigo":1644050,"nombreAdministrado":"VELASQUEZ VILLAFRANCA PRIMITIVO ABEL","tipoDocumento":"DNI","numeroDocumento":"62126949","celular":"922355307","correo":"abel@gmail.com","complejo":"Complejo Inca Garcilaso – Cancha 1","cancha":"Loza de futbol","fechaReserva":"2025-11-25","cantidadHoras":1,"montoTotal":15,"tarifaHora":15,"detalles":[{"idHorarioBase":1,"precio":15,"rango":"08:00 am - 09:00 am"}]}]}}
+
