@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Rechazado - Municipalidad de La Victoria</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px; color:#1e293b;">
+
+<div style="max-width: 650px; margin: auto; background: #ffffff; border-radius: 12px;
+            border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,.05);">
+
+    <!-- HEADER -->
+    <div style="background: linear-gradient(90deg, #dc2626, #b91c1c); padding: 25px; color: white;">
+        <div style="text-align: center;">
+            <h1 style="margin: 0; font-size: 22px; font-weight: bold;">Pago Rechazado</h1>
+
+            <p style="margin: 8px 0 0; font-size: 14px; opacity: .9;">
+                Operación N.º <strong>{{purchaseNumber}}</strong> • {{fechaOperacion}}
+            </p>
+        </div>
+    </div>
+
+    <div style="padding: 25px;">
+        <!-- MOTIVO -->
+        <h3 style="color:#0f172a; margin-top:0; font-size: 16px;">Motivo del rechazo</h3>
+
+        <div style="padding: 15px; background:#fef2f2; border-radius: 8px; border:1px solid #fecaca; margin-bottom:20px;">
+            <p style="font-size: 17px; font-weight:bold; color:#b91c1c; margin: 0 0 10px;">
+                {{motivoRechazo}}
+            </p>
+
+            <table style="width: 100%; font-size: 14px; color:#7f1d1d;">
+                <tr>
+                    <td style="padding: 5px 0; width: 40%;"><strong>Código:</strong></td>
+                    <td>{{visaCodigo}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px 0;"><strong>Descripcion:</strong></td>
+                    <td>{{visaAutorizacion}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px 0;"><strong>Accion Descripcion:</strong></td>
+                    <td>{{visaDescripcion}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px 0;"><strong>Traza:</strong></td>
+                    <td>{{visaTraza}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- MONTO -->
+        <h3 style="color:#0f172a; margin-top:0; font-size: 16px;">Detalle del intento de pago</h3>
+
+        <div style="padding: 15px; background:#f1f5f9; border-radius: 8px; border:1px solid #e2e8f0; margin-bottom:20px;">
+            <table style="width: 100%; font-size: 14px; color:#334155;">
+                <tr>
+                    <td style="padding: 6px 0; width: 40%;"><strong>Monto intentado:</strong></td>
+                    <td><strong style="color:#dc2626;">S/ {{totalPagado}}</strong></td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 6px 0;"><strong>Tarjeta:</strong></td>
+                    <td>{{marcaTarjeta}} — {{tarjetaEnmascarada}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- RECOMENDACIONES -->
+        <h3 style="color:#0f172a; margin-top:0; font-size: 16px;">Recomendaciones</h3>
+
+        <div style="padding: 15px; background:#f8fafc; border-radius: 8px; border:1px solid #e2e8f0; margin-bottom:20px; font-size:14px;">
+            <p style="margin: 4px 0;">• Verifique que su tarjeta tenga saldo disponible.</p>
+            <p style="margin: 4px 0;">• Asegure que esté habilitada para compras online.</p>
+            <p style="margin: 4px 0;">• Revise los datos ingresados o intente nuevamente.</p>
+            <p style="margin: 4px 0;">• Si el problema persiste, contacte a su entidad bancaria.</p>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div style="background:#f8fafc; padding: 18px; text-align: center; font-size: 12px; color:#475569;">
+        Municipalidad de La Victoria – Área de Deportes<br>
+        Este correo se generó automáticamente. Por favor, no responder.
+    </div>
+
+</div>
+</body>
+</html>

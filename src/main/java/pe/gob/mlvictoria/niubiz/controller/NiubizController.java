@@ -1,5 +1,6 @@
 package pe.gob.mlvictoria.niubiz.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,8 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.gob.mlvictoria.complejo.dto.niubiz.*;
+import pe.gob.mlvictoria.complejo.dto.pago.*;
 import pe.gob.mlvictoria.complejo.dto.reserva.ActuReciNiubizRequest;
+import pe.gob.mlvictoria.complejo.dto.tarifa.TarifaDetalleResponse;
 import pe.gob.mlvictoria.complejo.service.NiubizStotageService;
+import pe.gob.mlvictoria.complejo.service.PagoService;
 import pe.gob.mlvictoria.complejo.service.ReservaService;
 import pe.gob.mlvictoria.niubiz.service.NiubizWService;
 import pe.gob.mlvictoria.niubiz.service.TokenStorageService;
@@ -20,12 +24,12 @@ import pe.gob.mlvictoria.pagolinea.dto.pago.NumCompraRequestDTO;
 import pe.gob.mlvictoria.pagolinea.dto.pago.NumCompraResponseDTO;
 import pe.gob.mlvictoria.pagolinea.dto.recibo.GenerarReciboRequestDTO;
 import pe.gob.mlvictoria.pagolinea.dto.recibo.GenerarReciboResponseDTO;
+
 import pe.gob.mlvictoria.pagolinea.service.PagoLiniaService;
 import pe.gob.mlvictoria.talleres.exepcion.BusinessException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,19 +49,23 @@ public class NiubizController {
     private final ObjectMapper objectMapper;
     private final NiubizStotageService niubizStotageService;
     private final ReservaService reservaService;
+    private final PagoService pagoService;
 
     @Value("${niuviz.upload-dir}")
     private String logDirPrp;
 
     public NiubizController(NiubizWService niubizService, TokenStorageService tokenStorageService,
                             PagoLiniaService pagoLiniaService, ObjectMapper objectMapper,
-                            NiubizStotageService niubizStotageService, ReservaService reservaService) {
+                            NiubizStotageService niubizStotageService, ReservaService reservaService,
+                            PagoService pagoService) {
         this.reservaService = reservaService;
         this.pagoLiniaService = pagoLiniaService;
         this.niubizService = niubizService;
         this.tokenStorageService = tokenStorageService;
         this.objectMapper = objectMapper;
         this.niubizStotageService = niubizStotageService;
+
+        this.pagoService = pagoService;
     }
 
     @PostMapping("/visa-numero-compra")
@@ -134,6 +142,7 @@ public class NiubizController {
             String idReserva = formData.get("idReserva");
             String descripcion = formData.get("descripcion");
             String tasa = (String) formData.get("tasa");
+            String correo = formData.get("correo");
 
             NiubizRequest reque = new NiubizRequest();
             reque.setOpcion(5);
@@ -292,7 +301,11 @@ public class NiubizController {
                         detalle.toArray()
                 );
                 guardarComplejoLogVisa(logVisa, req);
-                response.sendRedirect("http://localhost:4500/inicio?tid="+transactionToken);
+
+                TicketAprobadoRequest ticketRequest = new TicketAprobadoRequest();
+                ticketRequest.setIdToken(transactionToken);
+                enviarTicketAprobado(ticketRequest);
+                response.sendRedirect("http://172.16.201.248:4500/inicio?tid="+transactionToken);
             } else {
                 System.out.println("Pago RECHAZADO para la compra: " + purchaseNumber + " - Estado: " + estado);
                 LogVisaDTO logVisa = new LogVisaDTO(
@@ -331,9 +344,11 @@ public class NiubizController {
                 reqFinal.setIdToken(res.getIdToken());
                 NiubizResponse resFinal = niubizStotageService.tokenStorage(reqFinal);
 
-                response.sendRedirect("http://localhost:4500/inicio?tid="+transactionToken);
+                BuscarTokenRequest buscarTokenRequest = new BuscarTokenRequest();
+                buscarTokenRequest.setIdToken(transactionToken);
+                enviarTicketRechazado(buscarTokenRequest,correo);
+                response.sendRedirect("http://172.16.201.248:4500/inicio?tid="+transactionToken);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             //response.sendRedirect("http://localhost:4500/inicio?error=true");
@@ -526,4 +541,65 @@ public class NiubizController {
             ));
         }
     }
+
+    //@PostMapping("/enviar-ticket-aprobado")
+    public ResponseEntity<TicketAproResulResponse> enviarTicketAprobado(@RequestBody TicketAprobadoRequest dto) {
+        TicketAprobadoResponse raw = pagoService.ticketAprobado(dto);
+
+        List<TicketDetalleResponse> detalles = new ArrayList<>();
+
+        try {
+            if (raw.getDetallesJson() != null) {
+                detalles = objectMapper.readValue(
+                        raw.getDetallesJson(),
+                        new TypeReference<List<TicketDetalleResponse>>() {}
+                );
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        TicketAproResulResponse respuesta = new TicketAproResulResponse(
+                raw.getStatus(),
+                raw.getMessage(),
+                raw.getIdReserva(),
+                raw.getNombreAdministrado(),
+                raw.getTipoDocumento(),
+                raw.getNumeroDocumento(),
+                raw.getCelular(),
+                raw.getCorreo(),
+                raw.getCodigoContribuyente(),
+                raw.getComplejo(),
+                raw.getCancha(),
+                raw.getFechaReserva(),
+                raw.getCantidadHoras(),
+                raw.getMontoTotal(),
+                raw.getIdrecibo(),
+                raw.getNumIngr(),
+                raw.getFecPago(),
+                raw.getPurchaseNumber(),
+                raw.getEstadoNiubiz(),
+                raw.getTarifaHora(),
+                detalles
+        );
+        pagoService.enviarTicketAprobado(respuesta,dto.getIdToken());
+        return ResponseEntity.ok(respuesta);
+    }
+
+    //@PostMapping("/enviar-ticket-aprobado")
+    public ResponseEntity<BuscarTokenResponse> enviarTicketRechazado(@RequestBody BuscarTokenRequest dto,String correo){
+        BuscarTokenResponse respuesta = pagoService.buscarTokenPago(dto);
+
+        if (respuesta.getAuthRaw() != null && respuesta.getAuthRaw() instanceof String authRawString) {
+            try {
+                AuthRawResponse auth = objectMapper.readValue(authRawString, AuthRawResponse.class);
+                respuesta.setAuthRaw(auth);
+
+            } catch (Exception e) {
+                throw new RuntimeException("Error al convertir authRaw en objeto AuthRaw", e);
+            }
+        }
+        pagoService.enviarTicketRechazado(respuesta,correo);
+        return ResponseEntity.ok(respuesta);
+    }
+
 }

@@ -1,5 +1,6 @@
 package pe.gob.mlvictoria.utility;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,6 +35,23 @@ public class Utility {
 
     public String safe(String val) {
         return val == null ? "" : val;
+    }
+
+    public String extractClientIp(HttpServletRequest request) {
+        String[] headers = {
+                "X-Forwarded-For",
+                "X-Real-IP",
+                "CF-Connecting-IP",
+                "True-Client-IP",
+                "Forwarded"
+        };
+
+        for (String h : headers) {
+            String v = request.getHeader(h);
+            if (v != null && !v.isBlank()) return v.split(",")[0].trim();
+        }
+
+        return request.getRemoteAddr();
     }
 
 }

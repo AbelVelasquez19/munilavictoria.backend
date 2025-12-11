@@ -27,4 +27,5 @@ public class EmailTemplateService {
             throw new RuntimeException("Error al cargar la plantilla de correo: " + templateName, e);
         }
     }
+
 }

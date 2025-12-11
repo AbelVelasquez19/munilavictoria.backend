@@ -81,7 +81,10 @@ public class SecurityConfig {
                                 "/api/niubiz/generate-session-token",
                                 "/api/niubiz/response-form",
                                 "/api/niubiz/visa-numero-compra",
-                                "/api/niubiz/logs-complejo"
+                                "/api/niubiz/logs-complejo",
+                                "/api/complejo-pago/enviar-ticket-aprobado",
+                                "/api/complejo-pago/enviar-ticket-rechazado",
+                                "/api/complejo-admin/login-complejo"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

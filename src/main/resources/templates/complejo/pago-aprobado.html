@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Aprobado - Municipalidad de La VICTORIA</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
+<div style="max-width: 650px; margin: auto; background: #ffffff; border-radius: 12px;
+            border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,.05);">
+
+    <!-- ENCABEZADO -->
+    <div style="background: linear-gradient(90deg, #0284c7, #0369a1); padding: 25px; color: white;">
+        <div style="text-align: center;">
+            <h1 style="margin: 0; font-size: 22px; font-weight: bold;">Pago Aprobado</h1>
+            <p style="margin: 5px 0 0; font-size: 14px; opacity: .9;">
+                Operación N.º <strong>{{purchaseNumber}}</strong> • {{fechaOperacion}}
+            </p>
+        </div>
+    </div>
+
+    <div style="padding: 25px;">
+
+        <!-- RESPONSABLE -->
+        <h3 style="color:#0f172a; margin-top:0; font-size: 16px;">Responsable de la reserva</h3>
+
+        <div style="padding: 15px; background:#f1f5f9; border-radius: 8px; border:1px solid #e2e8f0; margin-bottom:20px;">
+            <p style="font-size: 15px; margin: 0; font-weight: bold;">{{nombreCompleto}}</p>
+            <p style="font-size: 13px; color:#475569; margin: 3px 0 0;">
+                DNI: {{dni}} • Celular: {{celular}}
+            </p>
+        </div>
+
+        <!-- DETALLE DE LA RESERVA -->
+        <h3 style="color:#0f172a; margin-top:0; font-size: 16px;">Detalle de la reserva</h3>
+
+        <div style="padding: 15px; background:#f1f5f9; border-radius: 8px; border:1px solid #e2e8f0; margin-bottom:20px;">
+
+            <table style="width: 100%; font-size: 14px; color:#334155;">
+                <tr>
+                    <td style="padding: 6px 0; width: 40%;"><strong>Complejo y cancha:</strong></td>
+                    <td>{{canchaNombre}} — {{canchaTipo}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px 0;"><strong>Fecha:</strong></td>
+                    <td>{{fechaReserva}}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold;">Horarios:</td>
+                    <td>{{horariosLista}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px 0;"><strong>Total pagado:</strong></td>
+                    <td><strong style="font-size: 17px; color:#0284c7;">S/ {{totalPagado}}</strong></td>
+                </tr>
+            </table>
+
+        </div>
+
+        <!-- QR + CODIGO -->
+        <div style="text-align: center; margin-top: 30px;">
+
+            <p style="color:#334155; font-size: 14px; margin:0;">Código de Reserva</p>
+            <p style="font-size: 24px; font-weight: bold; letter-spacing: 2px; margin:5px 0 5px;">
+                {{codigoReserva}}
+            </p>
+
+            <!-- QR CORRECTO -->
+            <img src="cid:qrImage" alt="QR" style="width:200px; display:block; margin:0 auto;" />
+
+            <p style="font-size: 12px; color:#64748b; margin-top: 10px;">
+                Presenta este código al administrador del campo para validar tu reserva.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- PIE -->
+    <div style="background:#f8fafc; padding: 18px; text-align: center; font-size: 12px; color:#475569;">
+        Municipalidad de La Victoria – Área de Deportes<br>
+        Este correo se generó automáticamente. Por favor, no responder.
+    </div>
+
+</div>
+</body>
+</html>
