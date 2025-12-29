@@ -22,35 +22,34 @@ public class LoginTalleresServiceImpl implements LoginTalleresService {
 
     @Override
     public LoginTokenResponse loginTalleres(LoginRequest dto) {
+
         if(dto.getNumDocumento() == null || dto.getNumDocumento().isEmpty()){
             throw new BusinessException("El número de documento no puede ser nulo o vacío");
+        }
+        if(dto.getPassword() == null || dto.getPassword().isEmpty()){
+            throw new BusinessException("La contraseña no puede ser nula o vacía");
         }
 
         LoginResponse response = loginRepository.loginTalleres(dto);
 
-        if (response == null){
-            throw new BusinessException("Usuario no encontrado");
+        if (response.getStatus() == 0) {
+            throw new BusinessException(response.getMessage());
         }
 
-        if(response.getNestado() != 1){
-            throw new BusinessException("El usuario está inactivo");
-        }
-
-        boolean passwordCorrecta = passwordEncoder.matches(dto.getPassword(), response.getPassword());
+        boolean passwordCorrecta = passwordEncoder.matches(dto.getPassword(), response.getPasswordHash());
 
         if (!passwordCorrecta) {
             throw new BusinessException("Contraseña incorrecta");
         }
 
-        String token = jwtUtil.generateToken(response.getNumDoc());
-
+        String token = jwtUtil.generateToken(response.getDni());
         LoginTokenResponse tokenResponse = new LoginTokenResponse();
         tokenResponse.setToken(token);
-        tokenResponse.setNombres(response.getNombres());
-        tokenResponse.setPaterno(response.getPaterno());
-        tokenResponse.setMaterno(response.getMaterno());
-        tokenResponse.setNumDoc(response.getNumDoc());
-
+        tokenResponse.setNombreCompleto(response.getNombreCompleto());
+        tokenResponse.setNumDoc(response.getDni());
+        tokenResponse.setIdUsuario(response.getIdUsuario());
+        tokenResponse.setIdRol(response.getIdRol());
+        tokenResponse.setNombreRol(response.getRolNombre());
         return tokenResponse;
     }
 }

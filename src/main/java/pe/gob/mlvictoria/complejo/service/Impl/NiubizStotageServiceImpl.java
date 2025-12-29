@@ -30,4 +30,12 @@ public class NiubizStotageServiceImpl implements NiubizStotageService {
     public List<EstadoCuentaResponse> EstadoCuenta(EstadoCuentaRequest dto) {
         return niubizRepository.EstadoCuenta(dto);
     }
+
+    @Override
+    public List<DetalleReservaResponse> buscarDetalleReserva(int idReserva) {
+        if(idReserva<=0){
+            throw new IllegalArgumentException("El idReserva no puede ser nulo o menor o igual a cero");
+        }
+        return niubizRepository.buscarDetalleReserva(idReserva);
+    }
 }

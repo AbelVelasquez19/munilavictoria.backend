@@ -40,11 +40,21 @@ public class RestablecerController {
     @PostMapping("/validar-token")
     public ResponseEntity<ApiResponse<RestablecerResponse>> validarToken(@RequestBody TokenRequest dto){
         RestablecerResponse response = restablecerService.validarToken(dto);
+        if(response.getStatus().equals("0")){
+           return ResponseEntity.ok(
+                   new ApiResponse<>(
+                           LocalDateTime.now(),
+                           "fail",
+                           response.getMessage(),
+                           null
+                   )
+           );
+        }
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         LocalDateTime.now(),
                         "success",
-                        "Token validado exitosamente",
+                        response.getMessage(),
                         response
                 )
         );
@@ -53,11 +63,22 @@ public class RestablecerController {
     @PostMapping("/actualizar-password")
     public ResponseEntity<ApiResponse<RestablecerResponse>> actualizarPassword(@RequestBody ActPassRequest dto) {
         RestablecerResponse response = restablecerService.actualizarPassword(dto);
+        if(response.getStatus().equals("0")){
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            LocalDateTime.now(),
+                            "fail",
+                            response.getMessage(),
+                            null
+                    )
+            );
+        }
+
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         LocalDateTime.now(),
                         "success",
-                        "Contraseña actualizada correctamente",
+                        response.getMessage(),
                         response
                 )
         );

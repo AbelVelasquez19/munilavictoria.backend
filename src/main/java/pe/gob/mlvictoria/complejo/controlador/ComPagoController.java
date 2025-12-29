@@ -54,13 +54,12 @@ public class ComPagoController {
                 raw.getFechaReserva(),
                 raw.getCantidadHoras(),
                 raw.getMontoTotal(),
-                raw.getIdrecibo(),
-                raw.getNumIngr(),
-                raw.getFecPago(),
                 raw.getPurchaseNumber(),
                 raw.getEstadoNiubiz(),
                 raw.getTarifaHora(),
-                detalles
+                detalles,
+                raw.getAuthRaw()
+
         );
         return ResponseEntity.ok(respuesta);
     }

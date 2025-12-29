@@ -2,6 +2,7 @@ package pe.gob.mlvictoria.pagolinea.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class NiubizService {
     private final ObjectMapper objectMapper;
     private final VisaConfig visaConfig;
 
-    public NiubizService(RestTemplate restTemplate, ObjectMapper objectMapper, VisaConfig visaConfig) {
+    public NiubizService(@Qualifier("restTemplateNiubiz") RestTemplate restTemplate, ObjectMapper objectMapper, VisaConfig visaConfig) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.visaConfig = visaConfig;
@@ -69,7 +70,7 @@ public class NiubizService {
     }
 
     public SessionResponseDTO getSessionToken(SessionRequestDTO dto) {
-       final String url = visaConfig.getUrl().getSession();
+       final String url = visaConfig.getUrl().getSession()+"/"+visaConfig.getMerchantId();
         dto.setAmount(new BigDecimal(formatAmount(dto.getAmount())));
 
         HttpHeaders headers = new HttpHeaders();
@@ -102,7 +103,7 @@ public class NiubizService {
             BigDecimal amount,
             String currency
     ) {
-        final String url = visaConfig.getUrl().getAuthorization();
+        final String url = visaConfig.getUrl().getAuthorization()+"/"+visaConfig.getMerchantId();
         //final BigDecimal amt = amount.setScale(2, RoundingMode.HALF_UP);
         final BigDecimal amt = new BigDecimal(formatAmount(amount));
 

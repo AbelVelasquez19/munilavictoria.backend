@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApoderadoRequest {
-    private Integer opcion;
     private String codigo;
-    private String idTipoDocumento;
+    private String tipoDocumento;
     private String numDocumento;
+    private String passwordHash;
     private String operador;
     private String estacion;
-    private String password;
 }

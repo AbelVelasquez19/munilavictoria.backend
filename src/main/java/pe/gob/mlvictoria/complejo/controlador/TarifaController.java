@@ -5,16 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pe.gob.mlvictoria.complejo.dto.tarifa.CalcularTarifaRequest;
-import pe.gob.mlvictoria.complejo.dto.tarifa.CalcularTarifaResponse;
-import pe.gob.mlvictoria.complejo.dto.tarifa.TarifaDetalleResponse;
-import pe.gob.mlvictoria.complejo.dto.tarifa.TarifaResultadoResponse;
+import org.springframework.web.bind.annotation.*;
+import pe.gob.mlvictoria.complejo.dto.ApiResponse;
+import pe.gob.mlvictoria.complejo.dto.tarifa.*;
 import pe.gob.mlvictoria.complejo.service.TarifaService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,5 +48,46 @@ public class TarifaController {
         );
 
         return ResponseEntity.ok(respuesta);
+    }
+
+    @PostMapping("/listar-tarifa")
+    public ResponseEntity<ApiResponse<List<ListarTarrifaResponse>>> listar(@RequestBody ListarTarifaRequest dto) {
+        List<ListarTarrifaResponse> tarifas = tarifaService.listarTarifa(dto);
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        "success",
+                        "Consulta de estado de cuenta exitosa",
+                        tarifas
+                )
+        );
+    }
+
+    @PostMapping("/actualizar-estado-tarifa")
+    public ResponseEntity<ApiResponse<String>> actualizarEstado(@RequestParam("idTarifa") Integer idTarifa,@RequestParam("estado") Integer estado) {
+        int filasAfectadas = tarifaService.actualizarEstadoTarifa(idTarifa, estado);
+        String mensaje = filasAfectadas > 0 ? "Estado actualizado correctamente" : "No se pudo actualizar el estado";
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        "success",
+                        mensaje,
+                        null
+                )
+        );
+    }
+
+    @PostMapping("/actualizar-tarifa")
+    public ResponseEntity<ApiResponse<String>> actualizarTarifa(@RequestBody ActualizarTarifaRequest dto) {
+        int filasAfectadas = tarifaService.actualizarTarifa(dto);
+        String mensaje = filasAfectadas > 0 ? "Tarifa actualizada correctamente" : "No se pudo actualizar la tarifa";
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        "success",
+                        mensaje,
+                        null
+                )
+        );
     }
 }

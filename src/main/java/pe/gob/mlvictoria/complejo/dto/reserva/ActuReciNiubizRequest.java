@@ -10,6 +10,6 @@ public class ActuReciNiubizRequest {
     private  String tokenId;
     private  String status;
     private  String ordenanza;
-    private Integer idRecibo;
+    private  String idRecibo;
     private  String authRawJson;
 }

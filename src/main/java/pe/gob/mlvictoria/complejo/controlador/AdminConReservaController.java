@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.AdminConReservaRequest;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.AdminConReservaResponse;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.HorarioMasivaRequest;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.HorarioMasivaResponsive;
+import pe.gob.mlvictoria.complejo.dto.adminreserva.*;
 import pe.gob.mlvictoria.complejo.service.AdminConReservaService;
 import pe.gob.mlvictoria.talleres.dto.ApiResponse;
 
@@ -48,6 +45,19 @@ public class AdminConReservaController {
                         LocalDateTime.now(),
                         "success",
                         "Horarios generados exitosamente",
+                        response
+                )
+        );
+    }
+
+    @PostMapping("/cambiar-estado-horario")
+    public ResponseEntity<ApiResponse<CambiarEstadoHorarioResponse>> cambiarEstadoHorario(@RequestBody CambiarEstadoHorarioRequest request,HttpServletRequest req) {
+        CambiarEstadoHorarioResponse response = adminConReservaService.cambiarEstadoHorario(request, req);
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        "success",
+                        "Cambio de estado de horario exitoso",
                         response
                 )
         );

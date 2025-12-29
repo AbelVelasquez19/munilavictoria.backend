@@ -50,4 +50,11 @@ public interface NiubizMapper {
     """)
     @Options(statementType = StatementType.CALLABLE)
     List<EstadoCuentaResponse> estadoCuenta(@Param("dto") EstadoCuentaRequest dto);
+
+    @Select("""
+        EXEC complejoDeportivo.sp_reserva_detalle_por_idReserva
+        @idReserva = #{idReserva, jdbcType=INTEGER}
+    """)
+    @Options(statementType = StatementType.CALLABLE)
+    List<DetalleReservaResponse> buscarDetalleReserva( @Param("idReserva") int idReserva);
 }

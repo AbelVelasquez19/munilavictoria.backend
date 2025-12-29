@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginTokenResponse {
     private String numDoc;
-    private String nombres;
-    private String paterno;
-    private String materno;
+    private String nombreCompleto;
     private String token;
+    private Integer idUsuario;
+    private Integer idRol;
+    private String nombreRol;
 }

@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.AdminConReservaRequest;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.AdminConReservaResponse;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.HorarioMasivaRequest;
-import pe.gob.mlvictoria.complejo.dto.adminreserva.HorarioMasivaResponsive;
+import pe.gob.mlvictoria.complejo.dto.adminreserva.*;
 import pe.gob.mlvictoria.complejo.repository.AdminConReservaRepository;
 import pe.gob.mlvictoria.complejo.service.AdminConReservaService;
 import pe.gob.mlvictoria.talleres.exepcion.BusinessException;
@@ -43,4 +40,14 @@ public class AdminConReservaServiceImpl implements AdminConReservaService {
 
         return adminConReservaRepository.generarHorarioMasiva(dto);
     }
+
+    @Override
+    public CambiarEstadoHorarioResponse cambiarEstadoHorario(CambiarEstadoHorarioRequest dto,HttpServletRequest req) {
+        dto.setEstacion(utility.extractClientIp(req));
+        if(dto.getIdEstadoCancha() == null || dto.getNuevoEstado() == null){
+            throw new BusinessException("Los campos idHorario y nuevoEstado son obligatorios.");
+        }
+        return adminConReservaRepository.cambiarEstadoHorario(dto);
+    }
+
 }

@@ -8,6 +8,7 @@ import pe.gob.mlvictoria.complejo.service.PagoService;
 import pe.gob.mlvictoria.pagolinea.service.EmailService;
 import pe.gob.mlvictoria.pagolinea.service.EmailTemplateService;
 import pe.gob.mlvictoria.talleres.exepcion.BusinessException;
+import pe.gob.mlvictoria.utility.ComplejoConfig;
 import pe.gob.mlvictoria.utility.QrGeneratorUtil;
 
 import java.util.HashMap;
@@ -24,6 +25,9 @@ public class PagoServiceImpl implements PagoService {
 
     @Autowired
     private EmailTemplateService emailTemplateService;
+
+    @Autowired
+    private ComplejoConfig visaConfig;
 
     @Override
     public BuscarTokenResponse buscarTokenPago(BuscarTokenRequest dto) {
@@ -71,7 +75,7 @@ public class PagoServiceImpl implements PagoService {
 
             Map<String, String> variables = new HashMap<>();
             variables.put("purchaseNumber", response.getPurchaseNumber());
-            variables.put("fechaOperacion", response.getFecPago());
+            variables.put("fechaOperacion", response.getFechaReserva()+" "+new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date()));
             variables.put("nombreCompleto", response.getNombreAdministrado());
             variables.put("dni", response.getNumeroDocumento());
             variables.put("celular", response.getCelular());
@@ -84,7 +88,7 @@ public class PagoServiceImpl implements PagoService {
             variables.put("horariosLista", horariosHtml.toString());
 
 
-            byte[] qrImage = QrGeneratorUtil.generateQrBytes("http://172.16.201.248:4500/inicio?consulta="+idToken);
+            byte[] qrImage = QrGeneratorUtil.generateQrBytes(visaConfig.getUrl().getUrlFrontend()+"/inicio?tid="+idToken);
 
             String template = emailTemplateService.buildTemplate("complejo/pago-aprobado.html", variables);
 
@@ -107,7 +111,7 @@ public class PagoServiceImpl implements PagoService {
         DataSectionResponse data = auth.getData();
 
         variables.put("purchaseNumber", response.getPurchaseNumber());
-        variables.put("fechaOperacion", data.getTransactionDate());
+        variables.put("fechaOperacion", new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()));
         variables.put("motivoRechazo",auth.getErrorMessage());
         variables.put("visaCodigo",data.getActionCode());
         variables.put("visaAutorizacion",data.getActionDescription());

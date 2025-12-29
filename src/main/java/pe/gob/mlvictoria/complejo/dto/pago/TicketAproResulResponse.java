@@ -25,11 +25,12 @@ public class TicketAproResulResponse {
     private String fechaReserva;
     private Integer cantidadHoras;
     private Double montoTotal;
-    private Integer idrecibo;
-    private String numIngr;
-    private String fecPago;
+    //private Integer idrecibo;
+    //private String numIngr;
+    //private String fecPago;
     private String purchaseNumber;
     private String estadoNiubiz;
     private Integer tarifaHora;
     private List<TicketDetalleResponse> detallesJson;
+    private String AuthRaw;
 }

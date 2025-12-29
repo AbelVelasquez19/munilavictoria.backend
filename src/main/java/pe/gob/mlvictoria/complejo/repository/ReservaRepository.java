@@ -27,8 +27,8 @@ public class ReservaRepository {
         return reservaMapper.liberarReservaExpirada();
     }
 
-    public int pagarReserva(int idReserva,int idRecibo) {
-        return reservaMapper.pagarReserva(idReserva,idRecibo);
+    public int pagarReserva(int idReserva,String idRecibo, String tokenId) {
+        return reservaMapper.pagarReserva(idReserva,idRecibo, tokenId);
     }
 
     public int actualizarReciboNiubiz(ActuReciNiubizRequest dto) {

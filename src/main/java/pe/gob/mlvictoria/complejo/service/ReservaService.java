@@ -9,6 +9,6 @@ public interface ReservaService {
     ReservaCancelarResponse cancelarReserva(@Param("dto") ReservaCancelarRequest dto);
     ReservaDetalleResponse reservaDetalle(@Param("dto") ReservaDetalleRequest dto);
     ReservaHrsLibResponse liberarReservaExpirada();
-    int pagarReserva(int idReserva,int idRecibo);
+    int pagarReserva(int idReserva,String idRecibo, String tokenId);
     int actualizarReciboNiubiz(ActuReciNiubizRequest dto);
 }

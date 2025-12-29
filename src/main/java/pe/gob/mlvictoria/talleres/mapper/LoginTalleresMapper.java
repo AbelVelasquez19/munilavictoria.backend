@@ -12,8 +12,8 @@ import pe.gob.mlvictoria.talleres.dto.login.LoginResponse;
 public interface LoginTalleresMapper {
 
     @Select("""
-        EXEC cursos.sp_vtl_login
-              @numDocumento = #{dto.numDocumento, mode=IN, jdbcType=VARCHAR};
+        EXEC talleres.sp_web_login
+              @username = #{dto.numDocumento, mode=IN, jdbcType=VARCHAR};
     """)
     @Options(statementType = StatementType.CALLABLE)
     LoginResponse loginTalleres(@Param("dto") LoginRequest dto);

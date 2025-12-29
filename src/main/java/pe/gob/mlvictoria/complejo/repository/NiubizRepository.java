@@ -25,4 +25,8 @@ public class NiubizRepository {
     public List<EstadoCuentaResponse> EstadoCuenta(EstadoCuentaRequest dto) {
         return niubizMapper.estadoCuenta(dto);
     }
+
+    public List<DetalleReservaResponse> buscarDetalleReserva(int idReserva) {
+        return niubizMapper.buscarDetalleReserva(idReserva);
+    }
 }

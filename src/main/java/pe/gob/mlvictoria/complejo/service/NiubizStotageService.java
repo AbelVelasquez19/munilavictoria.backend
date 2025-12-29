@@ -8,4 +8,5 @@ public interface NiubizStotageService {
     NiubizResponse tokenStorage(NiubizRequest dto);
     int cajaRecibosWeb(ReciboGenerarRequest dto);
     List<EstadoCuentaResponse> EstadoCuenta(EstadoCuentaRequest dto);
+    List<DetalleReservaResponse> buscarDetalleReserva(int idReserva);
 }

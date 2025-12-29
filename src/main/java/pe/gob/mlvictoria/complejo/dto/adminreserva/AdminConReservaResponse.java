@@ -16,7 +16,7 @@ public class AdminConReservaResponse {
     private String estado;
     private Integer idReserva;
     private Double montoTotal;
-    private Integer idRecibo;
+    private String idRecibo;
     private String estadoLetra;
     private String clienteNombre;
     private String clienteDocumento;

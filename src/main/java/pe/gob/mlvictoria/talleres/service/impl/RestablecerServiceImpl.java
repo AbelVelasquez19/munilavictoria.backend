@@ -1,6 +1,7 @@
 package pe.gob.mlvictoria.talleres.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pe.gob.mlvictoria.talleres.dto.restablecer.*;
 import pe.gob.mlvictoria.talleres.exepcion.BusinessException;
@@ -18,6 +19,7 @@ public class RestablecerServiceImpl implements RestablecerService {
     private final RestablecerRepository restablecerRepository;
     private final CorreoTemplateService correoTemplateService;
     private final CorreoService correoService;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public RestablecerResponse buscarUsuarioCorreo(BusUsuCorreoRequest dto) {
@@ -74,18 +76,6 @@ public class RestablecerServiceImpl implements RestablecerService {
             }
             return response;
         }catch (Exception ex) {
-            String msg = ex.getMessage();
-            if (msg != null && msg.contains("Token inválido")) {
-                throw new BusinessException("Token inválido");
-            }
-
-            if (msg != null && msg.contains("El token ha expirado")) {
-                throw new BusinessException("El token ha expirado");
-            }
-
-            if (msg != null && msg.contains("El token ya fue utilizado")) {
-                throw new BusinessException("Token ya fue utilizado");
-            }
             throw ex;
         }
     }
@@ -112,20 +102,13 @@ public class RestablecerServiceImpl implements RestablecerService {
             RestablecerRequest restablecerRequest = new RestablecerRequest();
             restablecerRequest.setOpcion(4);
             restablecerRequest.setTokenn(dto.getToken());
-            restablecerRequest.setPassword(dto.getPassword());
+            restablecerRequest.setPassword(passwordEncoder.encode(dto.getPassword()));
             RestablecerResponse response = restablecerRepository.restablecerPassword(restablecerRequest);
             if (response == null) {
                 throw new BusinessException("Error al actualizar la contraseña.");
             }
             return response;
         }catch (Exception ex) {
-            String msg = ex.getMessage();
-            if (msg != null && msg.contains("Token inválido")) {
-                throw new BusinessException("Token inválido");
-            }
-            if (msg != null && msg.contains("Password Actualizado")) {
-                throw new BusinessException("Ya se actualizó la contraseña con este token");
-            }
             throw ex;
         }
     }

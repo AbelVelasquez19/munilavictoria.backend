@@ -13,7 +13,7 @@ import pe.gob.mlvictoria.talleres.dto.apoderado.ContribuyenteResponse;
 @Mapper
 public interface ApoderadoMapper {
     @Select("""
-        EXEC cursos.sp_vtl_contribuyente
+        EXEC talleres.sp_web_contribuyente
             @id_tipo_contri = #{dto.idTipoContri, mode=IN, jdbcType=VARCHAR},
             @nombres = #{dto.nombres, mode=IN, jdbcType=VARCHAR},
             @paterno = #{dto.paterno, mode=IN, jdbcType=VARCHAR},
@@ -32,14 +32,13 @@ public interface ApoderadoMapper {
     ContribuyenteResponse registrarContribuyente(@Param("dto") ContribuyenteRequest dto);
 
     @Select("""
-         EXEC cursos.sp_vtl_apoderado
-              @opc = #{dto.opcion, mode=IN, jdbcType=INTEGER},
+         EXEC talleres.sp_web_usuario_apoderado
               @codigo = #{dto.codigo, mode=IN, jdbcType=VARCHAR},
-              @id_tipo_documento = #{dto.idTipoDocumento, mode=IN, jdbcType=INTEGER},
-              @num_documento = #{dto.numDocumento, mode=IN, jdbcType=VARCHAR},
+              @tipoDocumento = #{dto.tipoDocumento, mode=IN, jdbcType=VARCHAR},
+              @numDocumento = #{dto.numDocumento, mode=IN, jdbcType=VARCHAR},
+              @passwordHash = #{dto.passwordHash, mode=IN, jdbcType=VARCHAR},
               @operador = #{dto.operador, mode=IN, jdbcType=VARCHAR},
-              @estacion = #{dto.estacion, mode=IN, jdbcType=VARCHAR},
-              @password = #{dto.password, mode=IN, jdbcType=VARCHAR};
+              @estacion = #{dto.estacion, mode=IN, jdbcType=VARCHAR};
      """)
     @Options(statementType = StatementType.CALLABLE)
     ApoderadoResponse registrarApoderado(@Param("dto") ApoderadoRequest dto);

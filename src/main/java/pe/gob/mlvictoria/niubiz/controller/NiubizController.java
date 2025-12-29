@@ -10,12 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import pe.gob.mlvictoria.complejo.dto.niubiz.*;
 import pe.gob.mlvictoria.complejo.dto.pago.*;
 import pe.gob.mlvictoria.complejo.dto.reserva.ActuReciNiubizRequest;
-import pe.gob.mlvictoria.complejo.dto.tarifa.TarifaDetalleResponse;
 import pe.gob.mlvictoria.complejo.service.NiubizStotageService;
 import pe.gob.mlvictoria.complejo.service.PagoService;
 import pe.gob.mlvictoria.complejo.service.ReservaService;
 import pe.gob.mlvictoria.niubiz.service.NiubizWService;
-import pe.gob.mlvictoria.niubiz.service.TokenStorageService;
 import pe.gob.mlvictoria.pagolinea.dto.ApiResponse;
 import pe.gob.mlvictoria.pagolinea.dto.niuviz.CreateIntentReq;
 import pe.gob.mlvictoria.pagolinea.dto.niuviz.CreateIntentResponse;
@@ -27,6 +25,7 @@ import pe.gob.mlvictoria.pagolinea.dto.recibo.GenerarReciboResponseDTO;
 
 import pe.gob.mlvictoria.pagolinea.service.PagoLiniaService;
 import pe.gob.mlvictoria.talleres.exepcion.BusinessException;
+import pe.gob.mlvictoria.utility.ComplejoConfig;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -44,27 +43,26 @@ import java.util.*;
 @RequestMapping("/api/niubiz")
 public class NiubizController {
     private final NiubizWService niubizService;
-    private final TokenStorageService tokenStorageService;
     private final PagoLiniaService pagoLiniaService;
     private final ObjectMapper objectMapper;
     private final NiubizStotageService niubizStotageService;
     private final ReservaService reservaService;
     private final PagoService pagoService;
+    private final ComplejoConfig visaConfig;
 
     @Value("${niuviz.upload-dir}")
     private String logDirPrp;
 
-    public NiubizController(NiubizWService niubizService, TokenStorageService tokenStorageService,
+    public NiubizController(NiubizWService niubizService,
                             PagoLiniaService pagoLiniaService, ObjectMapper objectMapper,
                             NiubizStotageService niubizStotageService, ReservaService reservaService,
-                            PagoService pagoService) {
+                            PagoService pagoService,ComplejoConfig visaConfig) {
         this.reservaService = reservaService;
         this.pagoLiniaService = pagoLiniaService;
         this.niubizService = niubizService;
-        this.tokenStorageService = tokenStorageService;
         this.objectMapper = objectMapper;
         this.niubizStotageService = niubizStotageService;
-
+        this.visaConfig = visaConfig;
         this.pagoService = pagoService;
     }
 
@@ -158,7 +156,7 @@ public class NiubizController {
             // Validar
             if (transactionToken == null || purchaseNumber == null) {
                 System.out.println("Error: Datos incompletos en callback");
-                response.sendRedirect("http://localhost:4500/error");
+                response.sendRedirect(visaConfig.getUrl().getUrlFrontend()+"/error");
                 return;
             }
 
@@ -177,10 +175,10 @@ public class NiubizController {
 
             if(estado == null){
                 System.out.println("Error: Estado de autorización nulo");
-                response.sendRedirect("http://localhost:4500/error");
+                response.sendRedirect(visaConfig.getUrl().getUrlFrontend()+"/error");
                 return;
             }
-            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 
             if(estado.equals("APROBADO")){
                 //  Guardamos el monto total(amount) en el TSS(no ideal)
@@ -190,24 +188,39 @@ public class NiubizController {
                 reqFinal.setIdToken(res.getIdToken());
                 NiubizResponse resFinal = niubizStotageService.tokenStorage(reqFinal);
 
-                //generar recibo
-                ReciboGenerarRequest rgt = new ReciboGenerarRequest();
-                rgt.setMsquery(1);
-                rgt.setCodigo(codigo);
-                rgt.setAnno(Year.now().getValue()+"");
-                rgt.setNumDocu(idReserva);
-                rgt.setTipo(tasa);
-                rgt.setTipoRec(tasa);
-                rgt.setPeriodo(LocalDate.now().getMonthValue()+"");
-                rgt.setImpInsol(res.getAmount());
-                rgt.setImpReaj(res.getAmount());
-                rgt.setObservacion(descripcion);
-                rgt.setFecVenc(LocalDateTime.now().format(formato));
-                rgt.setOperador(codigo);
-                rgt.setEstacion(extractClientIp(req));
-                int rid = niubizStotageService.cajaRecibosWeb(rgt);
+                List<DetalleReservaResponse> listaDetalleReserva = niubizStotageService.buscarDetalleReserva(Integer.parseInt(idReserva));
+                if(listaDetalleReserva.isEmpty()){
+                    throw new BusinessException("No se encontraron detalles para la reserva con id: " + idReserva);
+                }
+                String codigoConcatenado = null;
+                for (DetalleReservaResponse detalle : listaDetalleReserva){
+                    //generar recibo
+                    ReciboGenerarRequest rgt = new ReciboGenerarRequest();
+                    rgt.setMsquery(1);
+                    rgt.setCodigo(codigo);
+                    rgt.setAnno(Year.now().getValue()+"");
+                    rgt.setNumDocu(idReserva);
+                    rgt.setTipo(detalle.getTipoTasa());
+                    rgt.setTipoRec(detalle.getCodTasa());
+                    rgt.setPeriodo(LocalDate.now().getMonthValue()+"");
+                    rgt.setImpInsol(Double.parseDouble(detalle.getPrecio().toString()));
+                    rgt.setImpReaj(Double.parseDouble(detalle.getPrecio().toString()));
+                    rgt.setObservacion(descripcion);
+                    rgt.setFecVenc(LocalDateTime.now().format(formato));
+                    rgt.setOperador(codigo);
+                    rgt.setEstacion(extractClientIp(req));
+                    int rid = niubizStotageService.cajaRecibosWeb(rgt);
 
-                int iidReserva = reservaService.pagarReserva(Integer.parseInt(idReserva),rid);
+                    //aqui concatenar por coma el rid que devuelve el procedimiento
+                    if(codigoConcatenado == null){
+                        codigoConcatenado = String.valueOf(rid);
+                    }else{
+                        codigoConcatenado = codigoConcatenado + "," + rid;
+                        }
+                }
+
+
+                int iidReserva = reservaService.pagarReserva(Integer.parseInt(idReserva), codigoConcatenado, transactionToken);
 
                 ActuReciNiubizRequest resRecNiubiz = new ActuReciNiubizRequest();
                 resRecNiubiz.setCodigo(codigo);
@@ -216,13 +229,13 @@ public class NiubizController {
                 resRecNiubiz.setTokenId(transactionToken);
                 resRecNiubiz.setStatus("APPROVED");
                 resRecNiubiz.setOrdenanza("0");
-                resRecNiubiz.setIdRecibo(rid);
+                resRecNiubiz.setIdRecibo(codigoConcatenado);
                 resRecNiubiz.setAuthRawJson(objectMapper.writeValueAsString(authorizationResult));
                 int iidReciboNiubiz = reservaService.actualizarReciboNiubiz(resRecNiubiz);
 
                 EstadoCuentaRequest estadoCuenta = new EstadoCuentaRequest();
                 estadoCuenta.setCodigo(codigo);
-                estadoCuenta.setIdreciboGroup( String.valueOf(rid));
+                estadoCuenta.setIdreciboGroup( codigoConcatenado);
                 List<EstadoCuentaResponse> listEstadoCuenta = niubizStotageService.EstadoCuenta(estadoCuenta);
 
                 //detalle caja
@@ -235,7 +248,7 @@ public class NiubizController {
                     DetalleCajaResponse dtoRes = DetalleCajaResponse.builder()
                             .numIngr("0")
                             .idrecibo(Integer.parseInt(rw.getIdrecibo()))
-                            .montoTotal(BigDecimal.valueOf(res.getAmount()))
+                            .montoTotal(rw.getImpInsol())
                             .codigo(rw.getCodigo())
                             .anno(rw.getAnno())
                             .codPred(rw.getCodPred())
@@ -305,7 +318,7 @@ public class NiubizController {
                 TicketAprobadoRequest ticketRequest = new TicketAprobadoRequest();
                 ticketRequest.setIdToken(transactionToken);
                 enviarTicketAprobado(ticketRequest);
-                response.sendRedirect("http://172.16.201.248:4500/inicio?tid="+transactionToken);
+                response.sendRedirect(visaConfig.getUrl().getUrlFrontend()+"/inicio?tid="+transactionToken);
             } else {
                 System.out.println("Pago RECHAZADO para la compra: " + purchaseNumber + " - Estado: " + estado);
                 LogVisaDTO logVisa = new LogVisaDTO(
@@ -333,7 +346,7 @@ public class NiubizController {
                 resRecNiubiz.setTokenId(transactionToken);
                 resRecNiubiz.setStatus("REJECTED");
                 resRecNiubiz.setOrdenanza("0");
-                resRecNiubiz.setIdRecibo(0);
+                resRecNiubiz.setIdRecibo("0");
                 resRecNiubiz.setAuthRawJson(objectMapper.writeValueAsString(authorizationResult));
                 int iidReciboNiubiz = reservaService.actualizarReciboNiubiz(resRecNiubiz);
 
@@ -347,11 +360,10 @@ public class NiubizController {
                 BuscarTokenRequest buscarTokenRequest = new BuscarTokenRequest();
                 buscarTokenRequest.setIdToken(transactionToken);
                 enviarTicketRechazado(buscarTokenRequest,correo);
-                response.sendRedirect("http://172.16.201.248:4500/inicio?tid="+transactionToken);
+                response.sendRedirect(visaConfig.getUrl().getUrlFrontend()+"/inicio?tid="+transactionToken);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            //response.sendRedirect("http://localhost:4500/inicio?error=true");
+            response.sendRedirect(visaConfig.getUrl().getUrlFrontend()+"/inicio?tid=process_payment");
         }
     }
 
@@ -436,42 +448,28 @@ public class NiubizController {
     }
 
     public String validarTrama(Map<String, Object> trama) {
-
-        // ======== CASO 200 (tiene "order") ========
-        if (trama.containsKey("order")) {
-            Map<String, Object> order = (Map<String, Object>) trama.get("order");
-            String actionCode = String.valueOf(order.get("actionCode"));
-
-            if ("000".equals(actionCode)) return "APROBADO";
-            else return "RECHAZADO";
-        }
-
-        // ======== CASO 400 / 401 / 406 / 500 (NO tiene "order") ========
-        if (trama.containsKey("errorCode")) {
-            Integer errorCode = (Integer) trama.get("errorCode");
-
-            switch (errorCode) {
-                case 400: return "ERROR_400";
-                case 401: return "ERROR_401";
-                case 406: return "SESION_EXPIRADA";
-                case 500: return "ERROR_SERVIDOR";
-                default:   return "ERROR_DESCONOCIDO";
+        if (trama.containsKey("dataMap")) {
+            Map<String, Object> dataMap = (Map<String, Object>) trama.get("dataMap");
+            String status = String.valueOf(dataMap.get("STATUS"));
+            if ("Authorized".equalsIgnoreCase(status)) {
+                return "APROBADO";
+            } else {
+                return "RECHAZADO";
             }
         }
 
-        // ======== CASO ESPECIAL (si llega ACTION_CODE en data) =========
         if (trama.containsKey("data")) {
             Map<String, Object> data = (Map<String, Object>) trama.get("data");
-
-            if (data.containsKey("ACTION_CODE")) {
+            String status = String.valueOf(data.get("STATUS"));
+            if ("Authorized".equalsIgnoreCase(status)) {
+                return "APROBADO";
+            } else {
                 return "RECHAZADO";
             }
         }
 
         return "ERROR_DESCONOCIDO";
     }
-
-
 
     private String extractClientIp(HttpServletRequest request) {
         String[] headers = {
@@ -542,7 +540,6 @@ public class NiubizController {
         }
     }
 
-    //@PostMapping("/enviar-ticket-aprobado")
     public ResponseEntity<TicketAproResulResponse> enviarTicketAprobado(@RequestBody TicketAprobadoRequest dto) {
         TicketAprobadoResponse raw = pagoService.ticketAprobado(dto);
 
@@ -573,19 +570,16 @@ public class NiubizController {
                 raw.getFechaReserva(),
                 raw.getCantidadHoras(),
                 raw.getMontoTotal(),
-                raw.getIdrecibo(),
-                raw.getNumIngr(),
-                raw.getFecPago(),
                 raw.getPurchaseNumber(),
                 raw.getEstadoNiubiz(),
                 raw.getTarifaHora(),
-                detalles
+                detalles,
+                raw.getAuthRaw()
         );
         pagoService.enviarTicketAprobado(respuesta,dto.getIdToken());
         return ResponseEntity.ok(respuesta);
     }
 
-    //@PostMapping("/enviar-ticket-aprobado")
     public ResponseEntity<BuscarTokenResponse> enviarTicketRechazado(@RequestBody BuscarTokenRequest dto,String correo){
         BuscarTokenResponse respuesta = pagoService.buscarTokenPago(dto);
 

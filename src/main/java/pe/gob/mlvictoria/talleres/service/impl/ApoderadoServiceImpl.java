@@ -64,13 +64,12 @@ public class ApoderadoServiceImpl implements ApoderadoService {
     private ApoderadoRequest mapApoderado(GeneralRequest dto, String codigo, HttpServletRequest req) {
 
         ApoderadoRequest a = new ApoderadoRequest();
-        a.setOpcion(2);
         a.setCodigo(codigo);
-        a.setIdTipoDocumento(dto.getTipoDocumento());
+        a.setTipoDocumento(dto.getTipoDocumento());
         a.setNumDocumento(dto.getNumeroDocumento());
         a.setOperador("WEB_TALLERES");
         a.setEstacion(extractClientIp(req));
-        a.setPassword(passwordEncoder.encode(dto.getPassword()));
+        a.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
 
         return a;
     }

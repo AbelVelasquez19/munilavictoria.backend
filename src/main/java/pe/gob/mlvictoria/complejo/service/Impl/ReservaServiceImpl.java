@@ -80,8 +80,8 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     @Override
-    public int pagarReserva(int idReserva, int idRecibo) {
-        int result = reservaRepository.pagarReserva(idReserva,idRecibo);
+    public int pagarReserva(int idReserva, String idRecibo, String tokenId) {
+        int result = reservaRepository.pagarReserva(idReserva,idRecibo, tokenId);
         return result;
     }
 

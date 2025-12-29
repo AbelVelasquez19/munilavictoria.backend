@@ -8,6 +8,6 @@ import lombok.Data;
 public class ApoderadoResponse {
     private String status;
     private String message;
-    private String apoderadoId;
+    private String idApoderado;
     private String correo;
 }

@@ -3,10 +3,12 @@ package pe.gob.mlvictoria.niubiz.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import pe.gob.mlvictoria.utility.ComplejoConfig;
 import pe.gob.mlvictoria.utility.VisaConfig;
 
 import java.util.HashMap;
@@ -17,11 +19,13 @@ public class NiubizWService {
     private final VisaConfig visaConfig;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final ComplejoConfig complejoConfig;
 
-    public NiubizWService(RestTemplate restTemplate, VisaConfig visaConfig, ObjectMapper objectMapper) {
+    public NiubizWService(@Qualifier("restTemplateNiubiz") RestTemplate restTemplate, VisaConfig visaConfig, ObjectMapper objectMapper,ComplejoConfig complejoConfig) {
         this.restTemplate = restTemplate;
         this.visaConfig = visaConfig;
         this.objectMapper = objectMapper;
+        this.complejoConfig = complejoConfig;
     }
 
     // Servicio para generar token de acceso
@@ -48,7 +52,7 @@ public class NiubizWService {
 
     // Servicio de generar token de sesion
     public String generateSessionToken(String accessToken, double amount,String purchaseNumber, String clientIp, String email, String dni) {
-        String sessionUrl = visaConfig.getUrl().getSession();
+        String sessionUrl = visaConfig.getUrl().getSession()+"/"+visaConfig.getMerchantIdComplejo();
         RestTemplate restTemplate = new RestTemplate();
 
         // headers
@@ -68,7 +72,7 @@ public class NiubizWService {
         merchantDefineData.put("MDD4", email); //email
         merchantDefineData.put("MDD32", dni); //dni
         merchantDefineData.put("MDD75", "Invitado");
-        merchantDefineData.put("MDD77", 458);
+        merchantDefineData.put("MDD77", 1);
         antifraud.put("merchantDefineData", merchantDefineData);
         requestBody.put("antifraud", antifraud);
 
@@ -81,7 +85,6 @@ public class NiubizWService {
         dataMap.put("cardholderPhoneNumber", "015102070");
         requestBody.put("dataMap", dataMap);
 
-        // Solicitud HTTP
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(sessionUrl, request, String.class);
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -101,10 +104,8 @@ public class NiubizWService {
         }
     }
 
-    //Servicio para generar el token de autorizacion
     public Map<String, Object> generateAuthorizationToken(String accessToken, Map<String, Object> order) {
         try {
-            // Merchant ID(utilixamos el default del ejemplo de niubiz)
             String merchantId = visaConfig.getMerchantId();
 
             // Configurar headers
@@ -113,25 +114,33 @@ public class NiubizWService {
             headers.set("Authorization", accessToken);
 
             // request
-            Map<String, Object> requestBody = Map.of(
-                    "channel", "web",
-                    "captureType", "manual",
-                    "countable", true,
-                    "order", order
-            );
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("channel", "web");
+            requestBody.put("captureType", "manual");
+            requestBody.put("countable", true);
+            requestBody.put("order", order);
+
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("urlAddress", complejoConfig.getUrl().getUrlFrontend());
+            dataMap.put("partnerIdCode", "");
+            dataMap.put("serviceLocationCityName", "LIMA");
+            dataMap.put("serviceLocationCountrySubdivisionCode", "LMA");
+            dataMap.put("serviceLocationCountryCode", "PER");
+            dataMap.put("serviceLocationPostalCode", "15018");
+            requestBody.put("dataMap", dataMap);
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
 
             // Enviar solicitud HTTP
             ResponseEntity<Map> response = restTemplate.exchange(
-                    visaConfig.getUrl().getAuthorization(),
+                    visaConfig.getUrl().getAuthorization()+"/"+visaConfig.getMerchantIdComplejo(),
                     HttpMethod.POST,
                     request,
                     Map.class,
                     merchantId
             );
 
-            // Exitoso?
+            // Exitoso
             if (response.getStatusCode() == HttpStatus.OK) {
                 System.out.println("Autorización exitosa: " + response.getBody());
                 return response.getBody();

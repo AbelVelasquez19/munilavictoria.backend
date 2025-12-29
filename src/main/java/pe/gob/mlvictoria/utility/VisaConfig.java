@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "visa")
 public class VisaConfig {
     private String merchantId;
+    private String merchantIdComplejo;
     private String user;
     private String pwd;
     private Url url;

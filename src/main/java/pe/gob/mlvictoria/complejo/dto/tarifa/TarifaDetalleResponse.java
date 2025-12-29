@@ -10,4 +10,6 @@ public class TarifaDetalleResponse {
     private String rango;
     private BigDecimal precio;
     private String codTasa;
+    private String tipoTasa;
+    private String idTarifa;
 }

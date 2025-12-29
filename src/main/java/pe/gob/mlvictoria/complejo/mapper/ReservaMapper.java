@@ -47,10 +47,11 @@ public interface ReservaMapper {
     @Select("""
         EXEC complejoDeportivo.sp_actualizar_reserva
         @idReserva = #{idReserva},
-        @idRecibo = #{idRecibo};
+        @idRecibo = #{idRecibo},
+        @tokenId = #{tokenId};
     """)
     @Options(statementType = StatementType.CALLABLE)
-    int pagarReserva(@Param("idReserva") int idReserva,@Param("idRecibo") int idRecibo);
+    int pagarReserva(@Param("idReserva") int idReserva,@Param("idRecibo") String idRecibo, @Param("tokenId") String tokenId);
 
     @Options(statementType = StatementType.CALLABLE)
     @Select("""

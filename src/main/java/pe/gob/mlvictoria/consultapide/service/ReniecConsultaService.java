@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -19,19 +20,21 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public class ReniecConsultaService {
 
-    //44069651
-
-    @Autowired
     private final ReniecConfig reniecConfig;
-
-    @Autowired
     private final ReniecServiceImpl reniecService;
-
-    @Autowired
     private final RestTemplate restTemplate;
+
+    public ReniecConsultaService(
+            ReniecConfig reniecConfig,
+            ReniecServiceImpl reniecService,
+            @Qualifier("restTemplateNormal") RestTemplate restTemplate
+    ) {
+        this.reniecConfig = reniecConfig;
+        this.reniecService = reniecService;
+        this.restTemplate = restTemplate;
+    }
 
     @Retry(name = "reniecService")
     public ReniecResponseDTO consultarReniec(ReniecRequestDTO requestDTO,HttpServletRequest req) {
@@ -184,7 +187,4 @@ public class ReniecConsultaService {
         dto.setConsulta(consulta);
         return dto;
     }
-
-
-
 }

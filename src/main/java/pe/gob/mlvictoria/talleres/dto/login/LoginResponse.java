@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse {
-    private Integer idApoderado;
-    private String password;
-    private Integer nestado;
-    private String numDoc;
-    private String nombres;
-    private String paterno;
-    private String materno;
-
+    private Integer status;
+    private String message;
+    private Integer idUsuario;
+    private String dni;
+    private String passwordHash;
+    private String nombreCompleto;
+    private String correo;
+    private Integer idRol;
+    private String rolNombre;
+    private String fechaLogin;
 }
